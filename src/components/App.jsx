@@ -34,14 +34,12 @@ export default function App() {
         isSearchResult(prevState => [...prevState, ...hits]);
         isTotalPage(totalPage);
 
-        if (totalHits > 0) {
-          isStatus('resolve');
-        } else if (!totalHits) {
+       if (!totalHits) {
           isStatus('reject');
         }
       })
       .catch(error => console.log(error))
-      .finally(isStatus('resolve'));
+      .finally(() => {isStatus('resolve')});
   }, [page, searchQuery]);
 
 
@@ -69,7 +67,7 @@ export default function App() {
   return (
     <div className='app'>
         <Searchbar onSubmit={searchbarSubmit}/>
-        {status === 'pending' && <Loader />}
+        {status !== 'idle' && status !== 'resolve' && status !== 'reject' && <Loader />}
         {searchResult.length > 0 && <ImageGallery imageList={searchResult} onItemClick={onItemClick}/>}
         {searchResult.length > 0 && page !== totalPage && <Button loadMore={loadMore}/>}
         {largeImageURL && <Modal largeImageURL={largeImageURL} id={id} onModalWindowClose={onModalWindowClose}/>}
